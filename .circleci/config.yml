@@ -20,6 +20,8 @@ jobs:
           command: pip install jupyter-repo2docker
 
       - run:
-          name: Run tests
-          # This assumes pytest is installed via the install-package step above
-          command: pytest
+          name: Build image
+          command: |
+            jupyter-repo2docker \
+              --user-id 1000 --user-name jovyan \
+              .
