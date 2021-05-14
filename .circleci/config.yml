@@ -1,27 +1,37 @@
 version: 2.1
+orbs:
+  build:
+    jobs:
+      image:
+        description: "Build an image via hubploy"
+        parameters:
+          image-name:
+            type: string
+          push:
+            type: boolean
+            default: false
+        docker:
+          - image: cimg/python:3.8
+
+        steps:
+          - checkout
+          - setup_remote_docker
+
+          - run:
+              name: Setup jupyter-repo2docker
+              command: pip install jupyter-repo2docker
+
+          - run:
+              name: Build image
+              command: |
+                jupyter-repo2docker \
+                  --image-name << parameters.image-name >> \
+                  --user-id 1000 --user-name jovyan \
+                  .
 
 workflows:
   build:
     jobs:
-      - build-and-test
-
-
-jobs:
-  build-and-test:
-    docker:
-      - image: cimg/python:3.8
-
-    steps:
-      - checkout
-      - setup_remote_docker
-
-      - run:
-          name: Setup jupyter-repo2docker
-          command: pip install jupyter-repo2docker
-
-      - run:
-          name: Build image
-          command: |
-            jupyter-repo2docker \
-              --user-id 1000 --user-name jovyan \
-              .
+      - build/image:
+          image-name: test
+          push: false
