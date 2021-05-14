@@ -1,5 +1,8 @@
 name: Build Notebook Container
-on: push
+on:
+  - push
+  - pull_request
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,7 +17,7 @@ jobs:
         apt update > /dev/null && apt install python3 python3-pip
         pip install jupyter-repo2docker
         TAG=$(echo "${GITHUB_SHA}" | cut -c1-12)
-        IMAGE_NAME="TEST"
+        IMAGE_NAME="test"
         IMAGE="${IMAGE_NAME}:${TAG}"
         jupyter-repo2docker \
           --image-name ${IMAGE} \
