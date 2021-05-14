@@ -1,0 +1,26 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@1.4
+
+workflows:
+  build:
+    jobs:
+      - build-and-test
+
+
+jobs:
+  build-and-test:
+    docker:
+      - image: cimg/python:3.8
+
+    steps:
+      - checkout
+      - setup_remote_docker
+      - python/install-packages:
+          pkg-manager: pip
+          args: jupyter-repo2docker
+      - run:
+          name: Run tests
+          # This assumes pytest is installed via the install-package step above
+          command: pytest
